@@ -1,0 +1,239 @@
+import streamlit as st
+import streamlit_toggle as tog
+import pandas as pd
+import random
+from streamlit_option_menu import option_menu
+from streamlit_carousel import carousel
+
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import AdaBoostClassifier  # AdaBoost
+from sklearn.linear_model import LogisticRegression  # logistic回归
+from sklearn.neighbors import KNeighborsClassifier  # k近邻
+from sklearn.naive_bayes import GaussianNB  # 朴素贝叶斯
+from sklearn.svm import SVC  # 支持向量机
+from sklearn.tree import DecisionTreeClassifier
+from mlxtend.classifier import StackingCVClassifier
+from sklearn.neural_network import MLPClassifier
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+
+
+random.seed(42)
+styles = {
+    "container": {
+        "margin": "0px !important",
+        "padding": "0 !important",
+        "align-items": "stretch",
+        "background-color": "#fafafa"
+    },
+    "icon": {
+        "color": "black",
+        "font-size": "18px"
+    }, 
+    "nav-link": {
+        "font-size": "18px",
+        "text-align": "left",
+        "margin": "0px",
+        "--hover-color": "#fafa"
+    },
+    "nav-link-selected": {
+        "background-color": "#ff4b4b",
+        "font-size": "18px",
+        "font-weight": "normal",
+        "color": "black",
+    },
+}
+
+def input_data():
+    st.subheader(":blue[填写信息]")
+    with st.expander("信息问卷", expanded=True):
+        age, education, marriage, prep_will = 0, 0, 0, 0
+        age = st.slider("1.您的年龄", 0, 100)
+        edu_dict = {
+            "小学及以下": 1, "初中": 2, "高中（含职高）": 3, "大学及以上": 4
+        }
+        education_text = st.selectbox("2.受教育程度",index=None, 
+                                    options=edu_dict.keys(),placeholder="请选择")
+        if education_text:
+            education = edu_dict[education_text]
+        marry_dict = {
+            "单身": 1, "已婚": 2, "离异/丧偶": 3
+        }
+        marriage_text = st.selectbox("3.婚姻状态",index=None,
+                                    options=marry_dict.keys(), placeholder="请选择")
+        if marriage_text:
+            marriage = marry_dict[marriage_text]
+        st.text("4.是否使用过PrEP")
+        prep_everuse = st.toggle(label="prep_everuse", label_visibility="collapsed")
+        prep_everuse = int(prep_everuse)
+        prep_dict = {
+            "肯定不会": 1, "可能不会": 2, "不确定": 3, "可能会": 4, "肯定会": 5
+        }
+        prep_text = st.selectbox("5.PrEP使用意愿",index=None, 
+                                    options=prep_dict.keys(),placeholder="请选择")
+        if prep_text:
+            prep_will = prep_dict[prep_text]
+        st.text('6.是否发生过无保护肛交')
+        uai = st.toggle(label="uai", label_visibility="collapsed")
+        uai = int(uai)
+        st.text('7.是否曾发生关系暴力')
+        violence = st.toggle(label="violence", label_visibility='collapsed')
+        violence = int(violence)
+
+        social_support = st.slider("8.社会支持量表分数", 0, 100)
+        sexualCompu = st.slider("9.性冲动分数", 0, 50)
+        condom = st.slider("10.安全套使用技巧分数", 0, 30)
+        condom_subj = st.slider("11.安全套使用主管规范分数", 0, 20)
+        condom_effi = st.slider("12.安全套使用自我效能分数", 0, 30)
+        st.text("13. 是否曾接受VCT检测")
+        vct = st.toggle(label="vct", label_visibility='collapsed')
+        vct = int(vct)
+    
+    data = {
+        'Age': [age],
+        'Education': [education],
+        'Marriage': [marriage],
+        'PrEP_EverUse': [prep_everuse],
+        'PrEP_Willingness': [prep_will],
+        'UAI': [uai],
+        'Violence': [violence],
+        'SocialSupport_TotalScore': [social_support],
+        'SexualCompulsivity_TotalScore': [sexualCompu],
+        'Condom_Skill_TotalScore': [condom],
+        'Condom_SubjectiveNorm_TotalScore': [condom_subj],
+        'Condom_SelfEfficacy_TotalScore': [condom_effi],
+        'VCTEverDone': [vct]
+    }
+    df = pd.DataFrame(data)
+    return df
+    
+
+def load_csv_data(file_name):
+    data = pd.read_csv(file_name)
+    X = data.drop(['HIV'], axis=1)
+    y = data['HIV']
+    return X, y
+
+def model_training(X_test):
+    file_name = '20240309_modelsmote3.csv'
+    RANDOM_SEED = 42
+    CV = 8
+    X, y = load_csv_data(file_name)
+    X_train, _, y_train, _ = train_test_split(X, y, test_size=0.33, random_state=13)
+
+    base_models = [
+        LogisticRegression(penalty='l2', C=0.1, random_state=RANDOM_SEED),
+        AdaBoostClassifier(learning_rate=0.1, n_estimators=100, random_state=RANDOM_SEED),
+        KNeighborsClassifier(n_neighbors=4, p=2, weights="uniform"),
+        MLPClassifier(solver='lbfgs', alpha=1e-4, hidden_layer_sizes=(30, 20), random_state=RANDOM_SEED),
+        LinearDiscriminantAnalysis()
+    ]
+    stacking_model = StackingCVClassifier(
+        classifiers=base_models,
+        use_probas=True,  # 使用概率作为元特征
+        meta_classifier=LogisticRegression(penalty='l2', C=2, random_state=42),
+        cv=8,
+        random_state=42)
+    stacking_model.fit(X_train, y_train)
+    y_prob = stacking_model.predict_proba(X_test)[:,1]
+    return y_prob
+
+def predict(X_test):
+    st.markdown("您的信息输入如下")
+    st.write(X_test)
+    cal_text = st.text("计算中......")
+    y_prob = model_training(X_test)
+    cal_text.text("计算完成！")
+    if y_prob < 0.5:
+        output = f"没事哈老妹，你得HIV的概率是：{y_prob}，嘎嘎健康！"
+        st.text(output)
+    else:
+        output = f"你完咯！你的HIV患病概率是{y_prob}，麻利利地医院检查吧！"
+        st.text(output)
+
+menu = {
+    'title': '跨性别女性HIV预测',
+    'items': { 
+        '主页' : {
+            'action': None,
+            'item_icon': 'house',
+        },
+        '问卷量表' : {
+            'action': None,
+            'item_icon': 'bar-chart',
+        },
+        '关于' : {
+            #'action': about,
+            'item_icon': 'people'
+        },
+    },
+    'menu_icon': 'clipboard2-check-fill', 
+    'default_index': 0,
+    'with_view_panel': 'sidebar',
+    'orientation': 'vertical',
+    'styles': styles
+} 
+def show_menu(menu):
+    def _get_options(menu):
+        options = list(menu['items'].keys())
+        return options
+    def _get_icons(menu):
+        icons = [v['item_icon'] for _k, v in menu['items'].items()]
+        return icons
+    kwargs = {
+        'menu_title': menu['title'],
+        'options': _get_options(menu),
+        'icons': _get_icons(menu),
+        'menu_icon': menu['menu_icon'],
+        'default_index': menu['default_index'],
+        'orientation': menu['orientation'],
+        'styles': menu['styles']
+    }
+    with_view_panel = menu['with_view_panel']
+    if with_view_panel == 'sidebar':
+        with st.sidebar:
+            menu_selection = option_menu(**kwargs)
+    elif with_view_panel == 'main':
+        menu_selection = option_menu(**kwargs)
+    else:
+        raise ValueError(f"Unknown view panel value: {with_view_panel}. Must be 'sidebar' or 'main'.")
+    if 'submenu' in menu['items'][menu_selection] and menu['items'][menu_selection]['submenu']:
+        show_menu(menu['items'][menu_selection]['submenu'])
+    if 'action' in menu['items'][menu_selection] and menu['items'][menu_selection]['action']:
+        menu['items'][menu_selection]['action']()
+def show():
+    st.image('banner.png', use_column_width=True)
+    st.header(":rainbow[宇宙无敌爆炸超级准的HIV预测模型]")
+    st.warning("还在为可能会得HIV而担心吗？快来试试这款HIV预测模型吧，准到离谱！")
+    st.info("新品优惠，限时免费！")
+    st.error("好好填写真实数据哈，填不准也测不准哦")
+    st.markdown("""<h3 style='margin:0; text-align:centor; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#262261;'> PISA 2022 Results</span></h3>""", unsafe_allow_html=True)
+    test_items = [
+    #dict(title="",text="",interval=None,img="https://ibb.co/fCfnT91",),
+    #dict(title="",text="",interval=2000,img="imgae3.png",),
+    dict(title="",text="",interval=2000,img="https://raw.githubusercontent.com/summermp/pisa22/main/static/img/banner/insight3.png",),
+    #dict(title="",text="",interval=None,img="image4.png",),
+    ]
+    carousel(items=test_items, width=1)
+    
+    st.sidebar.image('sjtu.png')
+    show_menu(menu)
+    st.sidebar.markdown('''
+<div style='padding:5px 5px 1px 5px; border-radius:8px; background-color: orange; color:white;'>
+<h4 style='color: white; padding:3px; font-weight:bold;'><i class="fa-solid fa-circle-chevron-right fa-fade"></i> SJTU 2024</h4>
+<hr style='margin:0px 0px 5px 0px; padding:0; border: 2px solid white;'>
+专注HIV预测三十年
+
+<i class="fa-solid fa-language"></i> 我们更专业 <br/>
+<i class="fa-solid fa-globe"></i> 即刻开始你的体验吧！
+</div>''', unsafe_allow_html=True)
+
+if __name__ == '__main__':
+    
+    show()
+    X_test = input_data()
+    col1, col2, col3 = st.columns(3)
+    with col3:
+        on_click = st.button("紧张吗？我们要开始计算啦！")
+    if (on_click):
+        predict(X_test)
+    
