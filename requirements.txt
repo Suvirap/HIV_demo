@@ -1,0 +1,6 @@
+streamlit
+streamlit-option-menu
+pandas
+streamlit_carousel
+mlxtend
+scikit-learn
