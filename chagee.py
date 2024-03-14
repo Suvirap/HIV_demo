@@ -3,6 +3,7 @@ import pandas as pd
 import random
 from streamlit_option_menu import option_menu
 from streamlit_carousel import carousel
+from streamlit.components.v1 import html
 
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import AdaBoostClassifier  # AdaBoost
@@ -222,7 +223,24 @@ def show_menu(menu):
     if 'action' in menu['items'][menu_selection] and menu['items'][menu_selection]['action']:
         menu['items'][menu_selection]['action']()
 def show():
-    st.image('banner2.png', use_column_width=True)
+    html("""<script>
+    // Locate elements
+    var decoration = window.parent.document.querySelectorAll('[data-testid="stDecoration"]')[0];
+    var sidebar = window.parent.document.querySelectorAll('[data-testid="stSidebar"]')[0];
+    // Observe sidebar size
+    function outputsize() {
+        decoration.style.left = `${sidebar.offsetWidth}px`;
+    }
+    new ResizeObserver(outputsize).observe(sidebar);
+    // Adjust sizes
+    outputsize();
+    decoration.style.height = "4.5rem";
+    decoration.style.right = "45px";
+    // Adjust image decorations
+    decoration.style.backgroundImage = "url(https://raw.githubusercontent.com/Suvirap/HIV_demo/main/banner2.png)";
+    decoration.style.backgroundSize = "contain";
+    </script>""", width=0, height=0)
+    #st.image('banner2.png', use_column_width=True)
     st.markdown("""<h2 style='margin:0; text-align:left; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#ac1736;'>跨性别女性HIV感染风险在线预测工具</span></h2>""", unsafe_allow_html=True)
     st.warning("通过回答以下问题，您可获得由模型在线计算出的HIV感染风险概率")
     st.markdown("""<h3 style='margin:0; text-align:centor; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#ac1736;'> </span></h3>""", unsafe_allow_html=True)
