@@ -1,5 +1,4 @@
 import streamlit as st
-import streamlit_toggle as tog
 import pandas as pd
 import random
 from streamlit_option_menu import option_menu
