@@ -155,15 +155,15 @@ def home():
     if (on_click):
         predict(X_test)
 def question():
-    st.markdown("""<h3 style='margin:0; text-align:left; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#262261;'>社会支持量表</span></h3>""", unsafe_allow_html=True)
+    st.markdown("""<h3 style='margin:0; text-align:left; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#ac1736;'>社会支持量表</span></h3>""", unsafe_allow_html=True)
     st.image('question/社会支持.png', use_column_width=True)
-    st.markdown("""<h3 style='margin:0; text-align:left; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#262261;'>性冲动量表</span></h3>""", unsafe_allow_html=True)
+    st.markdown("""<h3 style='margin:0; text-align:left; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#ac1736;'>性冲动量表</span></h3>""", unsafe_allow_html=True)
     st.image('question/性冲动.png', use_column_width=True)
-    st.markdown("""<h3 style='margin:0; text-align:left; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#262261;'>安全套使用技巧量表</span></h3>""", unsafe_allow_html=True)
+    st.markdown("""<h3 style='margin:0; text-align:left; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#ac1736;'>安全套使用技巧量表</span></h3>""", unsafe_allow_html=True)
     st.image('question/安全套使用技巧.png', use_column_width=True)
-    st.markdown("""<h3 style='margin:0; text-align:left; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#262261;'>安全套使用主观规范量表</span></h3>""", unsafe_allow_html=True)
+    st.markdown("""<h3 style='margin:0; text-align:left; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#ac1736;'>安全套使用主观规范量表</span></h3>""", unsafe_allow_html=True)
     st.image('question/主观规范.png', use_column_width=True)
-    st.markdown("""<h3 style='margin:0; text-align:left; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#262261;'>安全套使用自我效能量表</span></h3>""", unsafe_allow_html=True)
+    st.markdown("""<h3 style='margin:0; text-align:left; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#ac1736;'>安全套使用自我效能量表</span></h3>""", unsafe_allow_html=True)
     st.image('question/自我效能.png', use_column_width=True)
 def about():
     st.markdown("")
@@ -223,9 +223,9 @@ def show_menu(menu):
         menu['items'][menu_selection]['action']()
 def show():
     st.image('banner2.png', use_column_width=True)
-    st.markdown("""<h2 style='margin:0; text-align:left; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#262261;'>跨性别女性HIV感染风险在线预测工具</span></h2>""", unsafe_allow_html=True)
+    st.markdown("""<h2 style='margin:0; text-align:left; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#ac1736;'>跨性别女性HIV感染风险在线预测工具</span></h2>""", unsafe_allow_html=True)
     st.warning("通过回答以下问题，您可获得由模型在线计算出的HIV感染风险概率")
-    st.markdown("""<h3 style='margin:0; text-align:centor; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#262261;'> </span></h3>""", unsafe_allow_html=True)
+    st.markdown("""<h3 style='margin:0; text-align:centor; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#ac1736;'> </span></h3>""", unsafe_allow_html=True)
     test_items = [
     dict(title="",text="",interval=None,img="https://raw.githubusercontent.com/Suvirap/HIV_demo/main/img/roll_image3.png",),
     #dict(title="",text="",interval=2000,img="imgae3.png",),
