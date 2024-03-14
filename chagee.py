@@ -155,18 +155,19 @@ def home():
     if (on_click):
         predict(X_test)
 def question():
-    st.markdown("")
-def about():
     st.markdown("""<h3 style='margin:0; text-align:left; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#262261;'>社会支持量表</span></h3>""", unsafe_allow_html=True)
     st.image('question/社会支持.png', use_column_width=True)
     st.markdown("""<h3 style='margin:0; text-align:left; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#262261;'>性冲动量表</span></h3>""", unsafe_allow_html=True)
     st.image('question/性冲动.png', use_column_width=True)
     st.markdown("""<h3 style='margin:0; text-align:left; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#262261;'>安全套使用技巧量表</span></h3>""", unsafe_allow_html=True)
-    st.image('question/使用技巧.png', use_column_width=True)
+    st.image('question/安全套使用技巧.png', use_column_width=True)
     st.markdown("""<h3 style='margin:0; text-align:left; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#262261;'>安全套使用主观规范量表</span></h3>""", unsafe_allow_html=True)
     st.image('question/主观规范.png', use_column_width=True)
     st.markdown("""<h3 style='margin:0; text-align:left; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#262261;'>安全套使用自我效能量表</span></h3>""", unsafe_allow_html=True)
     st.image('question/自我效能.png', use_column_width=True)
+def about():
+    st.markdown("")
+    
     
 
 
