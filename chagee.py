@@ -524,8 +524,8 @@ def show():
     test_items = [
     dict(title="",text="",interval=None,img="https://raw.githubusercontent.com/Suvirap/HIV_demo/main/img/roll_image3.png",),
     #dict(title="",text="",interval=2000,img="imgae3.png",),
-    dict(title="",text="",interval=2000,img="https://raw.githubusercontent.com/Suvirap/HIV_demo/main/roll_image2.png",),
-    dict(title="",text="",interval=None,img="https://raw.githubusercontent.com/Suvirap/HIV_demo/main/roll_image1.png",),
+    dict(title="",text="",interval=2000,img="https://raw.githubusercontent.com/Suvirap/HIV_demo/main/img/roll_image2.png",),
+    dict(title="",text="",interval=None,img="https://raw.githubusercontent.com/Suvirap/HIV_demo/main/img/roll_image1.png",),
     ]
     
     carousel(items=test_items, width=1)
