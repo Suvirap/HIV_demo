@@ -1,9 +1,10 @@
 import streamlit as st
 import pandas as pd
 import random
+import shap
+from streamlit.components.v1 import html
 from streamlit_option_menu import option_menu
 from streamlit_carousel import carousel
-from streamlit.components.v1 import html
 
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import AdaBoostClassifier  # AdaBoost
@@ -115,7 +116,19 @@ def load_csv_data(file_name):
     y = data['HIV']
     return X, y
 
-def model_training(X_test):
+def model_training(stacking_model, X_train, y_train, X_test):
+    stacking_model.fit(X_train, y_train)
+    y_prob = stacking_model.predict_proba(X_test)[:,1]
+    return y_prob
+def run_shap(stacking_model, X_train, X_test):
+    explainer = shap.KernelExplainer(stacking_model.predict, X_train)
+    shap_values = explainer.shap_values(X_test)
+    fig = shap.force_plot(explainer.expected_value, shap_values[0, :], X_test.iloc[0, :], matplotlib=True)
+    st.set_option('deprecation.showPyplotGlobalUse', False)
+    st.success("分析完成！")
+    st.pyplot(fig)
+
+def run_model(X_test):
     file_name = '20240309_modelsmote3.csv'
     RANDOM_SEED = 42
     CV = 8
@@ -135,18 +148,21 @@ def model_training(X_test):
         meta_classifier=LogisticRegression(penalty='l2', C=2, random_state=42),
         cv=8,
         random_state=42)
-    stacking_model.fit(X_train, y_train)
-    y_prob = stacking_model.predict_proba(X_test)[:,1]
-    return y_prob
-
-def predict(X_test):
-    st.markdown("您的信息输入如下")
-    st.write(X_test)
     with st.spinner("计算中......"):
-        y_prob = model_training(X_test)
+        y_prob = model_training(stacking_model, X_train, y_train, X_test)
     st.success("计算完成！")
     output = f"您的HIV预测概率是: {y_prob}"
     st.markdown(output)
+    with st.spinner("正在进行可解释性分析，预计等待1分钟，请稍候......"):
+        run_shap(stacking_model, X_train, X_test)
+
+
+# def predict(X_test):
+#     st.markdown("您的信息输入如下")
+#     st.write(X_test)
+#     run_model(X_test)
+    
+    
 def home():
     show()
     X_test = input_data()
@@ -154,7 +170,7 @@ def home():
     with col1:
         on_click = st.button("计算")
     if (on_click):
-        predict(X_test)
+        run_model(X_test)
 def question():
     st.markdown("""<h3 style='margin:0; text-align:left; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#ac1736;'>社会支持量表</span></h3>""", unsafe_allow_html=True)
     st.image('question/社会支持.png', use_column_width=True)
@@ -167,7 +183,66 @@ def question():
     st.markdown("""<h3 style='margin:0; text-align:left; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#ac1736;'>安全套使用自我效能量表</span></h3>""", unsafe_allow_html=True)
     st.image('question/自我效能.png', use_column_width=True)
 def about():
-    st.markdown("")
+    html("""
+    <style>
+    iframe {
+        margin-bottom: 0px;
+    }
+    html{
+        margin-top: 0px;
+        margin-bottom: 0px;
+        border: 1px solid #de3f53;padding:0px 4px;    
+        font-family: "Source Sans Pro", sans-serif;
+        font-weight: 400;
+        line-height: 1.6;
+        color: rgb(49, 51, 63);
+        background-color: rgb(255, 255, 255);
+        text-size-adjust: 100%;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        -webkit-font-smoothing: auto;
+        }
+        </style>
+    
+    <h2 style='color: #de3f53; margin-top:0px; border-bottom: solid 4px; '>更多心理咨询</h2>    
+    
+    <b>全国24小时心理热线</b>：<span style='color: #f2a93b; font-weight: bold;'>4001619995 <i class="fa-solid fa-calculator fa-fade"></i></span> <br/>
+    <b>上海市24小时心理热线</b>：<span style='color: #f2a93b; font-weight: bold;'>962525 <i class="fa-solid fa-calculator fa-fade"></i></span> <br/>
+    <b>上海市团市委电话心理咨询</b>：<span style='color: #f2a93b; font-weight: bold;'>021-12355 <i class="fa-solid fa-calculator fa-fade"></i></span>（工作日 9：00-21：00，双休日9：00-17：00）<br/>
+    <b>上海市妇联心理关爱热线</b>：<span style='color: #f2a93b; font-weight: bold;'>021-12338 <i class="fa-solid fa-calculator fa-fade"></i></span>（周一至周五 9：00-17：30）<br/>
+    """, height=190)
+    html("""
+    <style>
+    iframe {
+        margin-bottom: 0px;
+    }
+    html{
+        margin-top: 0px;
+        margin-bottom: 0px;
+        border: 1px solid #de3f53;padding:0px 4px;    
+        font-family: "Source Sans Pro", sans-serif;
+        font-weight: 400;
+        line-height: 1.6;
+        color: rgb(49, 51, 63);
+        background-color: rgb(255, 255, 255);
+        text-size-adjust: 100%;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        -webkit-font-smoothing: auto;
+        }
+        </style>
+    
+    <h2 style='color: #de3f53; margin-top:0px; border-bottom: solid 3px; '>更多HIV咨询、检测及就诊（上海地区）</h2>    
+    
+    <b>上海市自愿咨询检测机构名录</b>：<br/>
+    <span style='color: blue; font-weight: bold;'>https://ncaids.chinacdc.cn/fazl/jcjg_10287/zyzxjcmz/201811/t20181113_197133.htm<i class="fa-solid fa-calculator fa-fade"></i></span> <br/>
+    <b>上海艾滋病定点医院</b>： <br/>
+    复旦大学附属华山医院-皮肤科<br/>
+    上海交通大学医学院附属瑞金医院-皮肤科<br/>
+    复旦大学附属中山医院-皮肤科<br/>
+    上海交通大学医学院附属仁济医院-皮肤科<br/>
+    上海交通大学医学院附属第九人民医院-皮肤科
+    """, height=300)
+    #st.info("如有需要，关注“上海市精神卫生中心”公众号预约就诊，地址：上海市徐汇区宛平南路600号")
+
     
     
 
@@ -223,23 +298,6 @@ def show_menu(menu):
     if 'action' in menu['items'][menu_selection] and menu['items'][menu_selection]['action']:
         menu['items'][menu_selection]['action']()
 def show():
-    html("""<script>
-    // Locate elements
-    var decoration = window.parent.document.querySelectorAll('[data-testid="stDecoration"]')[0];
-    var sidebar = window.parent.document.querySelectorAll('[data-testid="stSidebar"]')[0];
-    // Observe sidebar size
-    function outputsize() {
-        decoration.style.left = `${sidebar.offsetWidth}px`;
-    }
-    new ResizeObserver(outputsize).observe(sidebar);
-    // Adjust sizes
-    outputsize();
-    decoration.style.height = "4.5rem";
-    decoration.style.right = "45px";
-    // Adjust image decorations
-    decoration.style.backgroundImage = "url(https://raw.githubusercontent.com/Suvirap/HIV_demo/main/banner2.png)";
-    decoration.style.backgroundSize = "contain";
-    </script>""", width=0, height=0)
     #st.image('banner2.png', use_column_width=True)
     st.markdown("""<h2 style='margin:0; text-align:left; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#ac1736;'>跨性别女性HIV感染风险在线预测工具</span></h2>""", unsafe_allow_html=True)
     st.warning("通过回答以下问题，您可获得由模型在线计算出的HIV感染风险概率")
@@ -265,7 +323,7 @@ if __name__ == '__main__':
 
     <i class="fa-solid fa-language"></i> - Stacking机器学习算法构建 <br/>
     <i class="fa-solid fa-language"></i> - 上海交通大学医学院课题组开发 <br/>
-    <i class="fa-solid fa-globe"></i> - 科学认识 平等包容
+    <i class="fa-solid fa-globe"></i> - 科学认识   平等包容
     </div>''', unsafe_allow_html=True)
     
     

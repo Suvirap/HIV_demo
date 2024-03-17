@@ -1,4 +1,5 @@
 streamlit
+shap
 streamlit-option-menu
 pandas
 streamlit_carousel
