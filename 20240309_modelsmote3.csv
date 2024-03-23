@@ -1,4 +1,4 @@
-Age,Education,Marriage,PrEP_EverUse,PrEP_Willingness,UAI,Violence,SocialSupport_TotalScore,SexualCompulsivity_TotalScore,Condom_Skill_TotalScore,Condom_SubjectiveNorm_TotalScore,Condom_SelfEfficacy_TotalScore,VCTEverDone,HIV
+Age,Education,Marriage,PrEPEverUse,PrEPWill,UAI,Violence,SocialSupport,SexualCompulsivity,CondomSkill,CondomSubjectiveNorm,CondomSelfEfficacy,VCTEverDone,HIV
 32,1,1,0,5,1,1,64,20,30,14,30,1,0
 34,2,1,0,4,0,1,46,21,15,15,29,1,1
 35,4,1,0,3,0,0,72,20,24,15,24,1,0

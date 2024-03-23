@@ -82,11 +82,11 @@ def input_data():
         violence = st.toggle(label="violence", label_visibility='collapsed')
         violence = int(violence)
 
-        social_support = st.slider("8.社会支持量表分数", 0, 100)
-        sexualCompu = st.slider("9.性冲动分数", 0, 50)
-        condom = st.slider("10.安全套使用技巧分数", 0, 30)
+        social_support = st.slider("8.社会支持量表分数", 12, 84)
+        sexualCompu = st.slider("9.性冲动分数", 10, 40)
+        condom = st.slider("10.安全套使用技巧分数", 6, 30)
         condom_subj = st.slider("11.安全套使用主观规范分数", 0, 20)
-        condom_effi = st.slider("12.安全套使用自我效能分数", 0, 30)
+        condom_effi = st.slider("12.安全套使用自我效能分数", 6, 30)
         st.text("13. 是否曾接受VCT检测")
         vct = st.toggle(label="vct", label_visibility='collapsed')
         vct = int(vct)
@@ -303,10 +303,10 @@ def show():
     st.warning("通过回答以下问题，您可获得由模型在线计算出的HIV感染风险概率")
     st.markdown("""<h3 style='margin:0; text-align:centor; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#ac1736;'> </span></h3>""", unsafe_allow_html=True)
     test_items = [
-    dict(title="",text="",interval=None,img="https://raw.githubusercontent.com/Suvirap/HIV_demo/main/img/roll_image3.png",),
+    dict(title="",text="",interval=None,img="https://ibb.co/YcbJL37",),
     #dict(title="",text="",interval=2000,img="imgae3.png",),
-    dict(title="",text="",interval=2000,img="https://raw.githubusercontent.com/Suvirap/HIV_demo/main/img/roll_image2.png",),
-    dict(title="",text="",interval=None,img="https://raw.githubusercontent.com/Suvirap/HIV_demo/main/img/roll_image1.png",),
+    dict(title="",text="",interval=2000,img="https://ibb.co/1Lm9zXJ",),
+    dict(title="",text="",interval=None,img="https://ibb.co/7CmRLjY",),
     ]
     
     carousel(items=test_items, width=1)
