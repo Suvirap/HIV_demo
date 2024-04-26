@@ -301,8 +301,9 @@ def show():
     #st.image('banner2.png', use_column_width=True)
     st.markdown("""<h2 style='margin:0; text-align:left; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#ac1736;'>跨性别女性HIV感染风险在线预测工具</span></h2>""", unsafe_allow_html=True)
     st.warning("通过回答以下问题，您可获得由模型在线计算出的HIV感染风险概率")
-    st.image("img/roll_image1.png", use_column_width=True)
-    # st.markdown("""<h3 style='margin:0; text-align:centor; font-weight:bold;'> <i class="fa-solid fa-square-poll-vertical fa-beat"></i> <span style='color:#ac1736;'> </span></h3>""", unsafe_allow_html=True)
+    col1, col2, col3 = st.columns([1,8,1])
+    with col2:
+        st.image("img/roll_image1.png", use_column_width=True)
    
 
 if __name__ == '__main__':
